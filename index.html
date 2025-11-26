@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SM Squared Mail - Smart Mail for Modern Teams</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b 40%, #4c1d95 80%);
+      --accent-blue: #38bdf8;
+      --accent-pink: #fb37ff;
+      --accent-green: #22c55e;
+      --accent-yellow: #facc15;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --card-bg: rgba(15, 23, 42, 0.65);
+      --glass-bg: rgba(15, 23, 42, 0.55);
+      --border-glass: rgba(148, 163, 184, 0.4);
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #1d4ed8, #0f172a 40%, #020617 75%);
+      color: var(--text-main);
+      scroll-behavior: smooth;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.14), transparent 55%),
+        radial-gradient(circle at 90% 10%, rgba(251, 55, 255, 0.16), transparent 55%),
+        radial-gradient(circle at 0% 85%, rgba(34, 197, 94, 0.18), transparent 60%),
+        radial-gradient(circle at 100% 90%, rgba(250, 204, 21, 0.18), transparent 55%);
+      opacity: 0.85;
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      backdrop-filter: blur(60px) saturate(140%);
+      -webkit-backdrop-filter: blur(60px) saturate(140%);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.9));
+      mix-blend-mode: soft-light;
+      z-index: -1;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .max-w {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Navbar */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      background: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, 0.85),
+        rgba(15, 23, 42, 0.55),
+        transparent
+      );
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.5rem;
+      gap: 1.25rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 30%;
+      background:
+        conic-gradient(from 150deg, #38bdf8, #fb37ff, #22c55e, #facc15, #38bdf8);
+      padding: 2px;
+      box-shadow:
+        0 0 0 1px rgba(148, 163, 184, 0.45),
+        0 14px 30px rgba(15, 23, 42, 0.85);
+    }
+
+    .brand-logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: radial-gradient(circle at 30% 0%, #0f172a, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      color: #e5e7eb;
+    }
+
+    .brand-text-main {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    .brand-text-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.3rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .nav-links a {
+      position: relative;
+      padding: 0.1rem 0;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.2rem;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-pink));
+      transition: width 0.18s ease-out;
+    }
+
+    .nav-links a:hover {
+      color: #e5e7eb;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .pill {
+      padding: 0.4rem 0.95rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.16), transparent 55%);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.8rem;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0%, #22c55e, #16a34a);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.95);
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn-outline {
+      padding: 0.45rem 0.95rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.7);
+      font-size: 0.8rem;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      transition: border-color 0.18s ease-out, background 0.18s ease-out, transform 0.12s ease-out;
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(248, 250, 252, 0.85);
+      background: rgba(15, 23, 42, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      padding: 0.5rem 1.3rem;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: linear-gradient(135deg, #38bdf8, #fb37ff);
+      color: #020617;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow:
+        0 12px 30px rgba(56, 189, 248, 0.5),
+        0 0 0 1px rgba(15, 23, 42, 0.5);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.01);
+      filter: brightness(1.02);
+      box-shadow:
+        0 16px 40px rgba(56, 189, 248, 0.7),
+        0 0 0 1px rgba(15, 23, 42, 0.5);
+    }
+
+    .btn-primary span.icon {
+      font-size: 1rem;
+    }
+
+    .hero {
+      padding: 3.5rem 0 4.5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.05fr);
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.22), transparent 55%);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .hero-kicker strong {
+      color: #e5e7eb;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .hero-title {
+      margin-top: 1.3rem;
+      font-size: clamp(2.3rem, 3.7vw, 3.1rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-title span.gradient {
+      background: linear-gradient(135deg, #38bdf8, #fb37ff, #facc15);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      margin-top: 1rem;
+      font-size: 0.98rem;
+      max-width: 32rem;
+      color: var(--text-muted);
+    }
+
+    .hero-subtitle strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .hero-actions {
+      margin-top: 1.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      align-items: center;
+    }
+
+    .hero-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hero-hint-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+    }
+
+    .hero-metadata {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.3rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .hero-metadata strong {
+      color: #e5e7eb;
+    }
+
+    .hero-right {
+      position: relative;
+    }
+
+    .hero-card {
+      position: relative;
+      padding: 1.4rem 1.4rem 1.15rem;
+      border-radius: var(--radius-xl);
+      background: var(--glass-bg);
+      border: 1px solid var(--border-glass);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(28px) saturate(170%);
+      -webkit-backdrop-filter: blur(28px) saturate(170%);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.25), transparent 55%),
+        radial-gradient(circle at 95% 20%, rgba(251, 55, 255, 0.22), transparent 55%),
+        radial-gradient(circle at 0% 100%, rgba(34, 197, 94, 0.18), transparent 60%);
+      opacity: 0.7;
+      mix-blend-mode: screen;
+      z-index: -1;
+    }
+
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+    }
+
+    .stack-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .stack-dots {
+      display: flex;
+      gap: 0.22rem;
+    }
+
+    .stack-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+    }
+
+    .stack-dot.blue { background: var(--accent-blue); }
+    .stack-dot.pink { background: var(--accent-pink); }
+    .stack-dot.green { background: var(--accent-green); }
+    .stack-dot.yellow { background: var(--accent-yellow); }
+
+    .stack-pill {
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .stack-pill span.indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+    }
+
+    .mail-grid {
+      margin-top: 0.6rem;
+      display: grid;
+      grid-template-columns: 1.6fr 1.1fr;
+      gap: 0.85rem;
+      align-items: flex-start;
+    }
+
+    .mail-thread {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 0.75rem 0.7rem;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.9);
+    }
+
+    .mail-thread-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 0.55rem;
+    }
+
+    .mail-thread-title {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #e5e7eb;
+      margin-bottom: 0.55rem;
+    }
+
+    .mail-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .mail-badge {
+      font-size: 0.64rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .mail-badge span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+    }
+
+    .mail-badge.blue span.dot { background: var(--accent-blue); }
+    .mail-badge.pink span.dot { background: var(--accent-pink); }
+    .mail-badge.green span.dot { background: var(--accent-green); }
+
+    .mail-lines {
+      display: grid;
+      gap: 0.4rem;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .mail-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .mail-line span.subject {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 10rem;
+    }
+
+    .mail-line span.tag {
+      font-size: 0.62rem;
+      padding: 0.13rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--accent-yellow);
+      background: rgba(24, 24, 27, 0.9);
+    }
+
+    .mail-stats {
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 0.75rem 0.7rem;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+
+    .mail-stats-title {
+      font-size: 0.76rem;
+      font-weight: 500;
+      color: #e5e7eb;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-pill {
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.62rem;
+    }
+
+    .stat-pill span.indicator-blue,
+    .stat-pill span.indicator-green {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+    }
+
+    .stat-pill span.indicator-blue { background: var(--accent-blue); }
+    .stat-pill span.indicator-green { background: var(--accent-green); }
+
+    .progress-group {
+      margin-top: 0.4rem;
+      display: grid;
+      gap: 0.4rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .progress-label span.value {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .progress-bar {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(31, 41, 55, 0.9);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22c55e, #facc15);
+      width: 78%;
+    }
+
+    .progress-fill.secondary {
+      background: linear-gradient(90deg, #38bdf8, #fb37ff);
+      width: 54%;
+    }
+
+    .founders {
+      margin-top: 0.7rem;
+      padding-top: 0.6rem;
+      border-top: 1px dashed rgba(148, 163, 184, 0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .founders-avatars {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 250, 252, 0.8);
+      background: radial-gradient(circle at 30% 0%, #38bdf8, #0f172a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: #e5e7eb;
+      box-shadow: 0 10px 18px rgba(15, 23, 42, 0.9);
+    }
+
+    .avatar + .avatar {
+      margin-left: -10px;
+      background: radial-gradient(circle at 30% 0%, #fb37ff, #0f172a);
+    }
+
+    section {
+      padding: 0 0 3.7rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .section-title span {
+      color: #e5e7eb;
+    }
+
+    .section-tagline {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 18rem;
+      text-align: right;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.4rem;
+    }
+
+    .feature-card {
+      position: relative;
+      padding: 1rem 1rem 0.9rem;
+      border-radius: var(--radius-lg);
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+    }
+
+    .feature-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.38rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .feature-chip span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-blue);
+    }
+
+    .feature-title {
+      font-size: 0.95rem;
+      margin-bottom: 0.35rem;
+      color: #e5e7eb;
+    }
+
+    .feature-body {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-meta {
+      font-size: 0.7rem;
+      color: var(--accent-green);
+    }
+
+    .highlight-card {
+      margin-top: 1.5rem;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-xl);
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .highlight-card strong {
+      color: #e5e7eb;
+    }
+
+    .highlight-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .highlight-tag {
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 0.68rem;
+      color: var(--accent-blue);
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.24), transparent 60%);
+    }
+
+    /* Founders section with photos */
+    .founder-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.4rem;
+    }
+
+    .founder-card {
+      border-radius: var(--radius-lg);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      padding: 1rem 1rem 0.9rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.8rem;
+      align-items: center;
+      box-shadow: 0 16px 38px rgba(15, 23, 42, 0.95);
+    }
+
+    .founder-name {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .founder-role {
+      font-size: 0.75rem;
+      color: var(--accent-blue);
+      margin-bottom: 0.3rem;
+    }
+
+    .founder-bio {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .cta-card {
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.94);
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.95),
+        0 0 0 1px rgba(15, 23, 42, 0.95);
+      padding: 1.5rem 1.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.1rem;
+    }
+
+    .cta-text {
+      max-width: 26rem;
+    }
+
+    .cta-title {
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .cta-body {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .cta-input {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .input-shell {
+      position: relative;
+      min-width: 220px;
+      flex: 1;
+    }
+
+    .input-shell input {
+      width: 100%;
+      padding: 0.55rem 0.9rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .input-shell input::placeholder {
+      color: rgba(148, 163, 184, 0.8);
+    }
+
+    .footer {
+      padding: 1.6rem 1.5rem 2.1rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.8rem;
+    }
+
+    .footer span.highlight {
+      color: var(--accent-yellow);
+    }
+
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        padding-top: 2.5rem;
+      }
+
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero-right {
+        order: -1;
+      }
+
+      .nav-inner {
+        padding-inline: 1.1rem;
+      }
+
+      .nav-links,
+      .nav-cta {
+        display: none;
+      }
+
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-open .nav-links,
+      .nav-open .nav-cta {
+        display: flex;
+      }
+
+      .nav-open .nav-inner {
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+
+      .nav-open .nav-links {
+        flex-basis: 100%;
+        justify-content: flex-start;
+        margin-top: 0.5rem;
+      }
+
+      .nav-open .nav-cta {
+        flex-basis: 100%;
+        justify-content: flex-start;
+      }
+
+      .grid-3 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .founder-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+      }
+
+      .section-tagline {
+        text-align: left;
+      }
+
+      .cta-card {
+        align-items: flex-start;
+      }
+
+      .cta-text {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- NAVBAR -->
+    <header class="nav" id="top">
+      <div class="max-w nav-inner">
+        <div class="brand">
+          <div class="brand-logo">
+            <div class="brand-logo-inner">SM²</div>
+          </div>
+          <div>
+            <div class="brand-text-main">SM Squared Mail</div>
+            <div class="brand-text-sub">Tech-first inbox for teams</div>
+          </div>
+        </div>
+
+        <nav class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#founders">Founders</a>
+          <a href="#pricing">Pricing</a>
+        </nav>
+
+        <div class="nav-cta">
+          <div class="pill">
+            <span class="pill-dot"></span>
+            Live in private beta
+          </div>
+          <button class="btn-outline" onclick="scrollToSection('pricing')">
+            View early access
+          </button>
+          <button class="btn-primary" onclick="scrollToSection('cta')">
+            <span>Get started</span>
+            <span class="icon">↗</span>
+          </button>
+        </div>
+
+        <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()">
+          ☰
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="max-w hero-grid">
+          <div class="hero-left">
+            <div class="hero-kicker">
+              <strong>SM Squared Mail</strong>
+              <span>AI-native email OS for modern startups</span>
+            </div>
+
+            <h1 class="hero-title">
+              Turn noisy inboxes into
+              <span class="gradient">smart, shared workspaces.</span>
+            </h1>
+
+            <p class="hero-subtitle">
+              SM Squared Mail helps teams triage, assign, and respond to critical conversations
+              in seconds using <strong>AI-powered routing, summaries, and workflows</strong>.
+            </p>
+
+            <div class="hero-actions">
+              <button class="btn-primary" onclick="scrollToSection('cta')">
+                Join the beta
+                <span class="icon">⚡</span>
+              </button>
+              <button class="btn-outline" onclick="scrollToSection('features')">
+                Explore features
+              </button>
+              <div class="hero-hint">
+                <span class="hero-hint-dot"></span>
+                No credit card · Under 2 minutes setup
+              </div>
+            </div>
+
+            <div class="hero-metadata">
+              <span><strong>Founders:</strong> Soham Misra &amp; Swastik Mandol</span>
+              <span><strong>Built for:</strong> support, sales, success &amp; ops teams</span>
+            </div>
+          </div>
+
+          <div class="hero-right">
+            <div class="hero-card">
+              <div class="hero-card-header">
+                <div class="stack-title">
+                  <div class="stack-dots">
+                    <span class="stack-dot blue"></span>
+                    <span class="stack-dot pink"></span>
+                    <span class="stack-dot green"></span>
+                    <span class="stack-dot yellow"></span>
+                  </div>
+                  <span>Realtime inbox snapshot</span>
+                </div>
+                <div class="stack-pill">
+                  <span class="indicator"></span>
+                  Smart queue · Live
+                </div>
+              </div>
+
+              <div class="mail-grid">
+                <div class="mail-thread">
+                  <div class="mail-thread-header">
+                    <span>Priority inbox · Today</span>
+                    <span>12 open</span>
+                  </div>
+
+                  <div class="mail-thread-title">
+                    AI-sorted conversations, ready to assign.
+                  </div>
+
+                  <div class="mail-badges">
+                    <div class="mail-badge blue">
+                      <span class="dot"></span>
+                      Product feedback
+                    </div>
+                    <div class="mail-badge pink">
+                      <span class="dot"></span>
+                      Billing &amp; payments
+                    </div>
+                    <div class="mail-badge green">
+                      <span class="dot"></span>
+                      VIP customers
+                    </div>
+                  </div>
+
+                  <div class="mail-lines">
+                    <div class="mail-line">
+                      <span class="subject">"Can we upgrade our workspace this week?"</span>
+                      <span class="tag">Assigned · Soham</span>
+                    </div>
+                    <div class="mail-line">
+                      <span class="subject">"Issue with onboarding new teammates"</span>
+                      <span class="tag">Playbook ready</span>
+                    </div>
+                    <div class="mail-line">
+                      <span class="subject">"Invoice for Q1 renewal"</span>
+                      <span class="tag">High value</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mail-stats">
+                  <div class="mail-stats-title">AI Insights · Last 24h</div>
+
+                  <div class="stat-pill-row">
+                    <div class="stat-pill">
+                      <span class="indicator-blue"></span>
+                      3x faster replies
+                    </div>
+                    <div class="stat-pill">
+                      <span class="indicator-green"></span>
+                      92% auto-routed
+                    </div>
+                  </div>
+
+                  <div class="progress-group">
+                    <div class="progress-label">
+                      <span>Resolution automation</span>
+                      <span class="value">78%</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill"></div>
+                    </div>
+
+                    <div class="progress-label">
+                      <span>Noise reduced</span>
+                      <span class="value">54%</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill secondary"></div>
+                    </div>
+                  </div>
+
+                  <div class="founders">
+                    <div>Designed &amp; built by Soham Misra &amp; Swastik Mandol</div>
+                    <div class="founders-avatars">
+                      <div class="avatar">SM</div>
+                      <div class="avatar">SW</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section id="features">
+        <div class="max-w">
+          <div class="section-header">
+            <div class="section-title">
+              What <span>SM Squared Mail</span> unlocks
+            </div>
+            <div class="section-tagline">
+              Built for teams drowning in threads, CCs, and forwards. Turn chaos into a calm, searchable, shared brain.
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <article class="feature-card">
+              <div class="feature-chip">
+                <span class="dot"></span>
+                AI-first routing
+              </div>
+              <h3 class="feature-title">Every email finds the right owner.</h3>
+              <p class="feature-body">
+                Automatically classify and route messages based on intent, priority, customer segment, and past patterns
+                so nothing slips through the cracks.
+              </p>
+              <p class="feature-meta">Reduce manual triage by up to 80%.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-chip">
+                <span class="dot" style="background: var(--accent-pink);"></span>
+                Shared workspace
+              </div>
+              <h3 class="feature-title">Comment, collaborate, close faster.</h3>
+              <p class="feature-body">
+                Loop in teammates with comments, internal notes, and mentions without messy forwards or reply-all storms.
+              </p>
+              <p class="feature-meta">Built for support, sales &amp; ops teams.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-chip">
+                <span class="dot" style="background: var(--accent-green);"></span>
+                Smart workflows
+              </div>
+              <h3 class="feature-title">Playbooks that trigger themselves.</h3>
+              <p class="feature-body">
+                Turn repetitive actions into repeatable flows: auto-tag, auto-respond, escalate, or sync to your CRM
+                the moment patterns appear.
+              </p>
+              <p class="feature-meta">Your inbox becomes an engine, not a burden.</p>
+            </article>
+          </div>
+
+          <div class="highlight-card">
+            <div>
+              <strong>Flexible by design.</strong>
+              Start with your existing email accounts and plug into tools you already love – helpdesks, CRMs, and internal dashboards.
+            </div>
+            <div class="highlight-tags">
+              <span class="highlight-tag">Gmail &amp; Outlook ready</span>
+              <span class="highlight-tag">API-first</span>
+              <span class="highlight-tag">SOC2 on the roadmap</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOUNDERS with PHOTOS -->
+      <section id="founders">
+        <div class="max-w">
+          <div class="section-header">
+            <div class="section-title">
+              Meet the <span>founders</span>
+            </div>
+            <div class="section-tagline">
+              SM Squared Mail is crafted by builders obsessed with clean systems, reliable infra, and calm teams.
+            </div>
+          </div>
+
+          <div class="founder-grid">
+            <!-- Soham Misra -->
+            <article class="founder-card">
+              <div>
+                <img
+                  src="soham.jpg"
+                  alt="Photo of Soham Misra"
+                  style="
+                    width: 70px;
+                    height: 70px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 2px solid rgba(148, 163, 184, 0.9);
+                    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.9);
+                    margin-bottom: 0.5rem;
+                  "
+                />
+              </div>
+              <div>
+                <div class="founder-name">Soham Misra</div>
+                <div class="founder-role">Co-founder · Product &amp; Engineering</div>
+                <p class="founder-bio">
+                  Leads product strategy and core architecture, turning complex email workflows into simple,
+                  reliable systems powered by AI and thoughtful UX for fast-moving teams.
+                </p>
+              </div>
+            </article>
+
+            <!-- Swastik Mandol -->
+            <article class="founder-card">
+              <div>
+                <img
+                  src="swastik.jpg"
+                  alt="Photo of Swastik Mandol"
+                  style="
+                    width: 70px;
+                    height: 70px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 2px solid rgba(148, 163, 184, 0.9);
+                    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.9);
+                    margin-bottom: 0.5rem;
+                  "
+                />
+              </div>
+              <div>
+                <div class="founder-name">Swastik Mandol</div>
+                <div class="founder-role">Co-founder · GTM &amp; Customer Experience</div>
+                <p class="founder-bio">
+                  Works hands-on with early users, shaping onboarding, support, and feedback loops so SM Squared Mail
+                  fits naturally into real-world sales, support, and operations teams.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRICING / EARLY ACCESS -->
+      <section id="pricing">
+        <div class="max-w">
+          <div class="section-header">
+            <div class="section-title">
+              Simple <span>early access</span>
+            </div>
+            <div class="section-tagline">
+              During private beta, SM Squared Mail is free for small teams while features stabilize and scale hardens.
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <article class="feature-card">
+              <div class="feature-chip">
+                <span class="dot" style="background: var(--accent-yellow);"></span>
+                Launch plan
+              </div>
+              <h3 class="feature-title">Beta · Free</h3>
+              <p class="feature-body">
+                Up to 5 teammates, 3 shared inboxes, core AI routing, summaries, and Slack-style collaboration on top of email.
+              </p>
+              <p class="feature-meta">Perfect for early-stage teams.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-chip">
+                <span class="dot" style="background: var(--accent-blue);"></span>
+                Roadmap
+              </div>
+              <h3 class="feature-title">Startup &amp; Growth tiers</h3>
+              <p class="feature-body">
+                Advanced analytics, audit logs, SSO, and premium SLAs designed for scaling support and sales organizations.
+              </p>
+              <p class="feature-meta">Launching after private beta.</p>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-chip">
+                <span class="dot" style="background: var(--accent-pink);"></span>
+                Talk to founders
+              </div>
+              <h3 class="feature-title">Shape the roadmap</h3>
+              <p class="feature-body">
+                Early customers get direct access to Soham &amp; Swastik for onboarding, feedback loops, and co-design sessions.
+              </p>
+              <p class="feature-meta">Your inbox challenges, solved together.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section id="cta">
+        <div class="max-w">
+          <div class="cta-card">
+            <div class="cta-text">
+              <div class="cta-title">Ready to calm your inbox?</div>
+              <p class="cta-body">
+                Drop an email address and get an invite as SM Squared Mail opens new beta slots.
+                You will hear directly from the founders – no bots, no spam.
+              </p>
+            </div>
+            <form class="cta-input" onsubmit="handleSubmit(event)">
+              <div class="input-shell">
+                <input type="email" required placeholder="you@startup.com" />
+              </div>
+              <button type="submit" class="btn-primary">
+                Request invite
+                <span class="icon">✉️</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div>
+        © <span id="year"></span> SM Squared Mail. Crafted with
+        <span class="highlight">focus, color, and care</span>.
+      </div>
+      <div>
+        Built by Soham Misra &amp; Swastik Mandol · Made for modern tech teams.
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function toggleNav() {
+      document.querySelector(".nav").classList.toggle("nav-open");
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      alert("Thank you! Your invite request for SM Squared Mail has been recorded.");
+      e.target.reset();
+    }
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
